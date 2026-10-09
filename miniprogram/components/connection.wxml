@@ -1,0 +1,8 @@
+<template name="connection">
+  <view wx:if="{{error}}" class="connection-error">
+    <view class="connection-title">{{state ? '连接中断 · 当前显示上次同步数据' : '尚未连接灌溉服务'}}</view>
+    <view class="connection-copy">{{error}}</view>
+    <view class="connection-actions"><text bindtap="retryConnection">重新连接</text><text bindtap="openConnectionSettings">连接设置 →</text></view>
+  </view>
+  <view wx:if="{{loading && !state}}" class="loading-panel"><view class="loading-dot"></view><text>正在同步农场数据…</text></view>
+</template>

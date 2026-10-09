@@ -1,0 +1,7 @@
+node_modules/
+dist/
+work/
+server/data/
+*.tsbuildinfo
+.env
+miniprogram/project.private.config.json

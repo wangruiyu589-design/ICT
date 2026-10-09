@@ -1,0 +1,33 @@
+{
+  "pages": [
+    "pages/overview/index",
+    "pages/irrigation/index",
+    "pages/plans/index",
+    "pages/alerts/index",
+    "pages/profile/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "澜枢 · 智慧灌溉",
+    "navigationBarBackgroundColor": "#f4f7fb",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f4f7fb",
+    "backgroundTextStyle": "dark",
+    "enablePullDownRefresh": true
+  },
+  "tabBar": {
+    "color": "#8592a6",
+    "selectedColor": "#1662e8",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {"pagePath": "pages/overview/index", "text": "总览", "iconPath": "assets/overview.png", "selectedIconPath": "assets/overview-active.png"},
+      {"pagePath": "pages/irrigation/index", "text": "灌溉", "iconPath": "assets/irrigation.png", "selectedIconPath": "assets/irrigation-active.png"},
+      {"pagePath": "pages/plans/index", "text": "计划", "iconPath": "assets/plans.png", "selectedIconPath": "assets/plans-active.png"},
+      {"pagePath": "pages/alerts/index", "text": "告警", "iconPath": "assets/alerts.png", "selectedIconPath": "assets/alerts-active.png"},
+      {"pagePath": "pages/profile/index", "text": "我的", "iconPath": "assets/profile.png", "selectedIconPath": "assets/profile-active.png"}
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

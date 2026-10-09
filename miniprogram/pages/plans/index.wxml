@@ -1,0 +1,30 @@
+<import src="../../components/connection.wxml" />
+<view class="page">
+  <view class="eyebrow">IRRIGATION SCHEDULE</view><view class="page-heading"><view><view class="page-title">让灌溉有条不紊</view><view class="page-subtitle">按时补水，生长自有节律</view></view><button class="heading-action" bindtap="openCreate" disabled="{{!state || busy || error}}">＋ 新建</button></view>
+  <template is="connection" data="{{state, loading, error}}" />
+  <block wx:if="{{state}}">
+    <view class="schedule-banner"><view class="schedule-symbol">◷</view><view><view class="schedule-heading">{{state.enabledPlanCount}} 项计划正在守候</view><view class="caption">计划时间为北京时间，执行依赖本地服务运行</view></view></view>
+    <view class="filter-row"><view class="filter-item {{filter === 'all' ? 'active' : ''}}" data-filter="all" bindtap="chooseFilter">全部计划</view><view class="filter-item {{filter === 'enabled' ? 'active' : ''}}" data-filter="enabled" bindtap="chooseFilter">已启用</view><view class="filter-item {{filter === 'paused' ? 'active' : ''}}" data-filter="paused" bindtap="chooseFilter">已暂停</view></view>
+    <view wx:for="{{visiblePlans}}" wx:key="id" class="panel plan-panel">
+      <view class="row"><view class="plan-title">{{item.name}}</view><view class="tag {{item.enabled ? 'tag-blue' : ''}}">{{item.enabled ? '已启用' : '已暂停'}}</view></view>
+      <view class="plan-time-row"><view class="plan-time">{{item.startTime}}</view><view class="plan-duration">灌溉 {{item.duration}} 分钟</view></view>
+      <view class="plan-days">{{item.daysText}}</view><view class="plan-zones">{{item.zoneNames}}</view>
+      <view class="plan-actions"><button class="text-button delete-plan" data-id="{{item.id}}" bindtap="deletePlan" loading="{{busy === 'delete-' + item.id}}" disabled="{{busy || error}}">删除</button><button class="plan-toggle {{item.enabled ? 'pause-plan' : ''}}" data-id="{{item.id}}" bindtap="togglePlan" loading="{{busy === item.id}}" disabled="{{busy || error}}">{{item.enabled ? '暂停计划' : '启用计划'}}</button></view>
+    </view>
+    <view wx:if="{{!visiblePlans.length}}" class="empty"><view class="empty-title">{{filter === 'all' ? '还没有灌溉计划' : '当前分类没有计划'}}</view><view>按分区和时段，安排适合田间的补水节奏</view><button class="empty-action" bindtap="openCreate" disabled="{{busy || error}}">新建灌溉计划</button></view>
+    <view class="sync-line">计划状态与网页端同步 · {{state.updatedText}}</view>
+  </block>
+</view>
+<view wx:if="{{sheetOpen}}" class="modal-backdrop" catchtap="closeSheet"><view class="sheet" catchtap="noop">
+  <view class="sheet-header"><view class="sheet-title">新建灌溉计划</view><view class="sheet-close" bindtap="closeSheet">×</view></view>
+  <scroll-view class="sheet-body" scroll-y enhanced>
+    <view class="field"><text class="field-label">计划名称</text><input class="field-input" placeholder="例如：东区清晨补水" value="{{form.name}}" bindinput="changeName" maxlength="40" /></view>
+    <view class="field"><text class="field-label">灌溉分区</text><checkbox-group bindchange="changeZones"><label class="check-option" wx:for="{{zoneOptions}}" wx:key="id"><checkbox value="{{item.id}}" checked="{{item.selected}}" color="#1662e8" /><view><view class="check-option-name">{{item.name}}</view><view class="check-option-note">{{item.crop}} · {{item.area}} 亩 {{item.status === 'offline' ? '· 当前离线' : ''}}</view></view></label></checkbox-group></view>
+    <view class="field"><text class="field-label">开始时间 · 北京时间</text><picker mode="time" value="{{form.startTime}}" bindchange="changeTime"><view class="field-input field-input-inline"><text>{{form.startTime}}</text><text class="muted">选择时间 ›</text></view></picker></view>
+    <view class="field"><text class="field-label">灌溉时长</text><view class="field-input field-input-inline"><input type="number" value="{{form.duration}}" bindinput="changeDuration" maxlength="3" /><text class="muted">分钟</text></view><view class="field-hint">每次 1～{{state.settings.maxDuration || 120}} 分钟</view></view>
+    <view class="field"><text class="field-label">重复执行日</text><view class="day-options"><view wx:for="{{dayOptions}}" wx:key="value" class="day-option {{item.selected ? 'selected' : ''}}" data-value="{{item.value}}" bindtap="toggleDay">{{item.label}}</view></view></view>
+    <view class="field row"><view><view class="field-label">保存后启用</view><view class="caption">按选定周期自动灌溉</view></view><switch checked="{{form.enabled}}" color="#1662e8" bindchange="changeEnabled" /></view>
+    <view wx:if="{{formError}}" class="form-error">{{formError}}</view><view class="form-note">定时任务由电脑上的本地服务执行。关闭服务或电脑休眠期间不会触发灌溉。</view>
+  </scroll-view>
+  <view class="sheet-footer"><button class="secondary-button" bindtap="closeSheet" disabled="{{busy}}">取消</button><button class="primary-button" bindtap="savePlan" loading="{{busy === 'create-plan'}}" disabled="{{busy || error}}">{{form.enabled ? '保存并启用' : '保存计划'}}</button></view>
+</view></view>

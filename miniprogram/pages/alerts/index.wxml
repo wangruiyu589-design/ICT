@@ -1,0 +1,12 @@
+<import src="../../components/connection.wxml" />
+<view class="page">
+  <view class="eyebrow">ALERT CENTER</view><view class="page-heading"><view><view class="page-title">每一处变化，及时知晓</view><view class="page-subtitle">设备与田间状态的集中提醒</view></view></view>
+  <template is="connection" data="{{state, loading, error}}" />
+  <block wx:if="{{state}}">
+    <view class="alert-summary"><view class="alert-summary-count">{{state.unreadCount}}</view><view><view class="alert-summary-title">{{state.unreadCount ? '条告警待关注' : '当前暂无待处理告警'}}</view><view class="caption">{{state.unreadCount ? '请检查相关设备和田间状态' : '所有提醒均已确认，保持关注即可'}}</view></view><view class="alert-summary-icon">{{state.unreadCount ? '!' : '✓'}}</view></view>
+    <view class="filter-row"><view class="filter-item {{filter === 'pending' ? 'active' : ''}}" data-filter="pending" bindtap="chooseFilter">待处理</view><view class="filter-item {{filter === 'acknowledged' ? 'active' : ''}}" data-filter="acknowledged" bindtap="chooseFilter">已知悉</view><view class="filter-item {{filter === 'all' ? 'active' : ''}}" data-filter="all" bindtap="chooseFilter">全部</view></view>
+    <view wx:for="{{visibleAlerts}}" wx:key="id" class="panel alert-card {{item.acknowledged ? 'acknowledged' : ''}}"><view class="row"><view class="tag {{item.level === 'critical' ? 'tag-red' : item.level === 'warning' ? 'tag-orange' : 'tag-blue'}}">{{item.levelText}}</view><text class="caption">{{item.timeText}}</text></view><view class="alert-title">{{item.title}}</view><view class="alert-detail">{{item.detail}}</view><view class="alert-footer"><view class="alert-zone">{{item.zoneName}}</view><view wx:if="{{item.acknowledged}}" class="acknowledged-label">✓ 已知悉</view><button wx:else class="acknowledge-button" data-id="{{item.id}}" bindtap="acknowledge" loading="{{busy === item.id}}" disabled="{{busy || error}}">确认知悉</button></view></view>
+    <view wx:if="{{!visibleAlerts.length}}" class="empty alerts-empty"><view class="empty-check">✓</view><view class="empty-title">{{filter === 'pending' ? '暂时没有需要关注的事项' : '这里还没有告警记录'}}</view><view>田间的每一个重要变化都会在这里提醒你</view></view>
+    <view class="alert-footnote">确认知悉只记录处理状态。设备离线或含水率异常仍需检查对应分区。</view><view class="sync-line">{{state.updatedText}} · 本地模拟</view>
+  </block>
+</view>

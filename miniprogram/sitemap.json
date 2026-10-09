@@ -1,0 +1,1 @@
+{"desc":"本地调试应用，不参与微信内容索引","rules":[{"action":"disallow","page":"*"}]}
